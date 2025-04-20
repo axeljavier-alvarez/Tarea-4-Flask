@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Médico</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 400px; 
+            background-color: #e0f7fa; 
+            padding: 20px;
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px; 
+            text-align: center;
+            color: #dc3545; 
+        }
+        p {
+            text-align: center;
+            margin-bottom: 20px; 
+        }
+        .btn-danger {
+            width: 100%; 
+        }
+        .btn-secondary {
+            width: 100%; 
+            margin-top: 10px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eliminar Médico</h1>
+        <p>¿Estás seguro de que deseas eliminar a <strong>{{ medico.nombre }} {{ medico.apellido }}</strong>?</p>
+        <form method="POST" action="{{ url_for('eliminar_medico', id=medico.id) }}">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{{ url_for('medicos_principal') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
