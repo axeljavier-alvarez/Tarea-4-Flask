@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Pacientes</title>
+    <title>Lista de Citas</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -21,24 +18,13 @@
         .table {
             background-color: #e9f7fa; 
         }
-        .btn-outline-primary {
-            border-color: #007bff; 
-            color: #007bff; 
-        }
-        .btn-outline-primary:hover {
-            background-color: #007bff; 
-            color: white; 
-        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">Gestión Médica</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-center">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('pacientes_principal') }}">Pacientes</a>
@@ -49,41 +35,43 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('citas_principal') }}">Citas</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('historial_principal') }}">Historial Medico</a>
                     </li>
+
+
+
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
-        <h1>Lista de Pacientes</h1>
-        <a href="{{ url_for('crear_paciente') }}" class="btn btn-outline-primary">Agregar Nuevo Paciente</a>
+        <h1>Lista de Citas</h1>
+        <a href="{{ url_for('crear_cita') }}" class="btn btn-outline-primary">Agregar Nueva Cita</a>
         <table class="table table-striped mt-3">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Fecha de Nacimiento</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
+                    <th>ID Paciente</th>
+                    <th>ID Médico</th>
+                    <th>Fecha de Cita</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {% for paciente in pacientes %}
+                {% for cita in citas %}
                 <tr>
-                    <td>{{ paciente.id }}</td>
-                    <td>{{ paciente.nombre }}</td>
-                    <td>{{ paciente.apellido }}</td>
-                    <td>{{ paciente.fecha_nacimiento }}</td>
-                    <td>{{ paciente.telefono }}</td>
-                    <td>{{ paciente.email }}</td>
+                    <td>{{ cita.id }}</td>
+                    <td>{{ cita.paciente_id }}</td>
+                    <td>{{ cita.medico_id }}</td>
+                    <td>{{ cita.fecha_cita }}</td>
+                    <td>{{ cita.estado }}</td>
                     <td>
-                        <a href="{{ url_for('editar_paciente', id=paciente.id) }}" class="btn btn-outline-warning btn-sm">Editar</a>
-                        <a href="{{ url_for('eliminar_paciente', id=paciente.id) }}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+                        <a href="{{ url_for('editar_cita', id=cita.id) }}" class="btn btn-outline-warning btn-sm">Editar</a>
+                        <a href="{{ url_for('eliminar_cita', id=cita.id) }}" class="btn btn-outline-danger btn-sm">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -28,6 +29,25 @@ class Medico(db.Model):
     telefono = db.Column(db.String(15))
     email = db.Column(db.String(100))
 
+
+# Modelo de Cita
+class Cita(db.Model):
+    __tablename__ = 'Citas'
+    id = db.Column(db.Integer, primary_key=True)
+    paciente_id = db.Column(db.Integer, db.ForeignKey('Pacientes.id'))
+    medico_id = db.Column(db.Integer, db.ForeignKey('Medicos.id'))
+    fecha_cita = db.Column(db.DateTime)
+    estado = db.Column(db.String(50))
+    
+# Modelo de Historial Médico
+class HistorialMedico(db.Model):
+    __tablename__ = 'Historial_Medico'
+    id = db.Column(db.Integer, primary_key=True)
+    paciente_id = db.Column(db.Integer, db.ForeignKey('Pacientes.id'))
+    fecha = db.Column(db.Date)
+    descripcion = db.Column(db.Text)
+    
+    
 # Ruta para listar pacientes
 @app.route('/')
 def index():
@@ -135,6 +155,123 @@ def eliminar_medico(id):
         return redirect(url_for('medicos_principal'))
 
     return render_template('eliminar_medico.html', medico=medico)
+
+
+
+@app.route('/citas_principal')
+def citas_principal():
+    citas = Cita.query.all()
+    return render_template('citas_principal.html', citas=citas)
+
+@app.route('/crear_cita', methods=['GET', 'POST'])
+def crear_cita():
+    if request.method == 'POST':
+        paciente_id = request.form['paciente_id']
+        medico_id = request.form['medico_id']
+        
+        fecha_cita_str = request.form['fecha_cita']
+        fecha_cita = datetime.fromisoformat(fecha_cita_str)  
+
+        estado = request.form['estado']
+
+        nueva_cita = Cita(paciente_id=paciente_id, medico_id=medico_id, fecha_cita=fecha_cita, estado=estado)
+        db.session.add(nueva_cita)
+        db.session.commit()
+
+        return redirect(url_for('citas_principal'))
+
+    pacientes = Paciente.query.all()
+    medicos = Medico.query.all()
+    return render_template('crear_cita.html', pacientes=pacientes, medicos=medicos)
+
+
+@app.route('/editar_cita/<int:id>', methods=['GET', 'POST'])
+def editar_cita(id):
+    cita = Cita.query.get_or_404(id)
+
+    if request.method == 'POST':
+        cita.paciente_id = request.form['paciente_id']
+        cita.medico_id = request.form['medico_id']
+        
+        fecha_cita_str = request.form['fecha_cita']
+        cita.fecha_cita = datetime.fromisoformat(fecha_cita_str)  
+
+        cita.estado = request.form['estado']
+
+        db.session.commit()
+        return redirect(url_for('citas_principal'))
+
+    pacientes = Paciente.query.all()
+    medicos = Medico.query.all()
+    return render_template('editar_cita.html', cita=cita, pacientes=pacientes, medicos=medicos)
+
+@app.route('/eliminar_cita/<int:id>', methods=['GET', 'POST'])
+def eliminar_cita(id):
+    cita = Cita.query.get_or_404(id)
+
+    if request.method == 'POST':
+        db.session.delete(cita)
+        db.session.commit()
+        return redirect(url_for('citas_principal'))
+
+    return render_template('eliminar_cita.html', cita=cita)
+
+
+
+# Rutas para Historial Médico
+
+@app.route('/historial_principal')
+def historial_principal():
+    historial = HistorialMedico.query.all()
+    return render_template('historial_principal.html', historial=historial)
+
+@app.route('/crear_historial', methods=['GET', 'POST'])
+def crear_historial():
+    if request.method == 'POST':
+        paciente_id = request.form['paciente_id']
+        fecha_str = request.form['fecha']
+        descripcion = request.form['descripcion']
+
+        fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+
+        nuevo_historial = HistorialMedico(paciente_id=paciente_id, fecha=fecha, descripcion=descripcion)
+        db.session.add(nuevo_historial)
+        db.session.commit()
+
+        return redirect(url_for('historial_principal'))
+
+    pacientes = Paciente.query.all()
+    return render_template('crear_historial.html', pacientes=pacientes)
+
+@app.route('/editar_historial/<int:id>', methods=['GET', 'POST'])
+def editar_historial(id):
+    historial = HistorialMedico.query.get_or_404(id)
+
+    if request.method == 'POST':
+        historial.paciente_id = request.form['paciente_id']
+        fecha_str = request.form['fecha']
+        historial.descripcion = request.form['descripcion']
+
+        historial.fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+
+        db.session.commit()
+        return redirect(url_for('historial_principal'))
+
+    pacientes = Paciente.query.all()
+    return render_template('editar_historial.html', historial=historial, pacientes=pacientes)
+
+@app.route('/eliminar_historial/<int:id>', methods=['GET', 'POST'])
+def eliminar_historial(id):
+    historial = HistorialMedico.query.get_or_404(id)
+
+    if request.method == 'POST':
+        db.session.delete(historial)
+        db.session.commit()
+        return redirect(url_for('historial_principal'))
+
+    return render_template('eliminar_historial.html', historial=historial)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

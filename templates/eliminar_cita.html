@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Cita</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 400px; 
+            background-color: #e0f7fa; 
+            padding: 20px;
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eliminar Cita</h1>
+        <p class="text-center">¿Estás seguro de que quieres eliminar esta cita?</p>
+        <form method="POST">
+            <button type="submit" class="btn btn-danger btn-block">Eliminar</button>
+            <a href="{{ url_for('citas_principal') }}" class="btn btn-secondary btn-block">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
